@@ -1,0 +1,35 @@
+{
+  "change": {
+    "branch": "master",
+    "id": "asdfawer3",
+    "number": "87",
+    "owner": {
+      "email": "bender@planex.3000",
+      "name": "Bender \"Bending\" Rodriguez",
+      "username": "bender"
+    },
+    "project": "potato",
+    "subject": "Baked potato",
+    "url": "https://planex.3000/gerrit/87"
+  },
+  "patchSet": {
+    "createdOn": 1353255438,
+    "number": "3",
+    "parents": [
+      "asdf3234"
+    ],
+    "ref": "refs/changes/87/80/3",
+    "revision": "12341asdfasdf",
+    "uploader": {
+      "email": "fry@planex.3000",
+      "name": "Philip J. Fry",
+      "username": "phillipjfry"
+    }
+  },
+  "type": "patchset-created",
+  "uploader": {
+    "email": "fry@planex.3000",
+    "name": "Philip J. Fry",
+    "username": "phillipjfry"
+  }
+}

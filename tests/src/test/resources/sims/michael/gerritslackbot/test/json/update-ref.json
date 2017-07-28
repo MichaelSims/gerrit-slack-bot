@@ -1,0 +1,14 @@
+{
+  "refUpdate": {
+    "newRev": "234asdfasdfas",
+    "oldRev": "235rwawrgsdfgadsfasdf",
+    "project": "test/other",
+    "refName": "master"
+  },
+  "submitter": {
+    "email": "fry@planex.3000",
+    "name": "Philip J. Fry",
+    "username": "phillipjfry"
+  },
+  "type": "ref-updated"
+}

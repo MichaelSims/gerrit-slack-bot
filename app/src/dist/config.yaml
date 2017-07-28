@@ -1,0 +1,76 @@
+# Example configuration. This is mapped to the data class [sims.michael.gerritslackbot.model.Config]
+
+# Incoming webhook URL - required
+Slack incoming webhook URL: "https://hooks.slack.example.com/services/id"
+
+# The script buffers gerrit events as "bursts". A burst is a group of events that are followed by a minimum amount
+# of time with no more events. This config option sets the buffer timeout. (optional - defaults to 15 seconds)
+Event buffer timeout in seconds: 15
+
+# Slack message configuration - required
+#
+# username is required, all else is optional
+#
+# Note that the script can send direct messages when recognized users are added as reviewers. To enable this,
+# set directMessagesEnabled to true
+Slack message configuration: # required
+  username: "Gerrit Review Bot"
+  iconUrl: "http://www.example.com/icon.png"
+  directMessagesEnabled: false
+
+# Gerrit stream configuration - required
+#
+# host and username are required. privateKeyLocations is a list of paths to SSH private keys to use, which can be
+# omitted if your ssh_config file provides the necessary details.
+Gerrit stream configuration:
+  host: "gerrit.example.com"
+  username: "username"
+  privateKeyLocations:
+  - "/home/gerrit-slack-bot/.ssh/gerrit_service_rsa"
+
+# Maps gerrit usernames to Slack usernames. This is used to describe events and additionally is required for
+# direct messages for reviewer added events.
+Gerrit to Slack username mappings:
+  "gerrit_username": "slack_username"
+
+# List of event matchers - required
+#
+# This is a list of matcher definitions for gerrit stream events. Each item in the list has the following properties:
+# project - exact match on project OR "*" to match all - required
+# branch - exact match on branch OR "*" to match all - required
+# subject - regular expression to match on any part of subject (match is case-insensitive) or "*" to match all - required
+# isVerification - boolean to match on comment added events that are verification approvals - optional
+#     missing or null means match both verifications and non-verifications
+# channel - channel to notify - optional. If missing, the event will be dropped (used for filtering unwanted events)
+#
+# Note that order matters... each event will be matched against each matcher in order and the first match wins.
+Event matchers:
+
+# By default no notifications will be sent without removing this matcher! It matches all events and consumes them
+# without sending a notification, since the channel property is null (missing)
+- project: "*"
+  branch: "*"
+  subject: "*"
+
+# Drop all commits that start with WIP in the subject
+#- project: "*"
+#  branch: "*"
+#  subject: "^WIP: "
+
+# Drop all verifications... matchers with null/missing channel consume the event without notifying
+#- project: "*"
+#  branch: "*"
+#  subject: "*"
+#  isVerification: true
+
+# Send all commits from feature-branch on project-one to #feature-branch-channel
+#- project: "project-one"
+#  branch: "feature-branch"
+#  subject: "*"
+#  channel: "#feature-branch-channel"
+
+# Send all commits from project-two to #other-channel
+#- project: "project-two"
+#  branch: "*"
+#  subject: "*"
+#  channel: "#other-channel"

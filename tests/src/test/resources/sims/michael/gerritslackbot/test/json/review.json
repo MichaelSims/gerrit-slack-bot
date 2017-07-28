@@ -1,0 +1,49 @@
+{
+  "type": "comment-added",
+  "change": {
+    "project": "test",
+    "branch": "master",
+    "id": "asdfasdfw34",
+    "number": "32",
+    "subject": "This is a subject",
+    "owner": {
+      "name": "Philip J. Fry",
+      "email": "fry@planex.3000",
+      "username": "phillipjfry"
+    },
+    "url": "https://planex.3000/gerrit/32"
+  },
+  "patchSet": {
+    "number": "1",
+    "revision": "235asefasdf",
+    "parents": [
+      "234qwaegsdfg"
+    ],
+    "ref": "refs/changes/32/32/1",
+    "uploader": {
+      "name": "Philip J. Fry",
+      "email": "fry@planex.3000",
+      "username": "phillipjfry"
+    },
+    "createdOn": 1353128279
+  },
+  "author": {
+    "name": "Philip J. Fry",
+    "email": "fry@planex.3000",
+    "username": "phillipjfry"
+  },
+  "approvals": [
+    {
+      "type": "CRVW",
+      "description": "Code Review",
+      "value": "-1"
+    },
+    {
+      "type": "VRIF",
+      "description": "Verified",
+      "value": "1"
+    }
+  ],
+  "comment": "sample-review"
+}
+

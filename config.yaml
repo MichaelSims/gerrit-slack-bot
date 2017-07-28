@@ -1,0 +1,30 @@
+Event matchers:
+- project: "MessagingEngineering/connectwebportal-ui"
+  branch: "*"
+  subject: "*"
+  channel: "mse"
+- project: "DigitalHome/DH-iOS"
+  branch: "master"
+  subject: "*"
+  channel: "ios"
+- project: "MyAccount/MyAccount-iOS"
+  branch: "master"
+  subject: "MYACMOB-6230"
+  channel: ""
+- project: "*"
+  branch: "*"
+  subject: "*"
+  channel: "dn-test"
+Gerrit to Slack username mappings:
+  'bob': "michaelsims"
+  '*': "michaelsims"
+Gerrit stream configuration:
+  host: "gerrit.xfinity.com"
+  username: "GitHubEnt"
+  privateKeyLocations:
+  - "/Users/msims/.ssh/gerrit_service_rsa"
+Slack incoming webhook URL: "http://what"
+Slack message configuration:
+  username: "bender"
+  iconUrl: "http://www.iconeasy.com/icon/png/Movie%20%26%20TV/Futurama%20Vol.%201/Bender.png"
+  directMessagesEnabled: false

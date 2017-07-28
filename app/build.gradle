@@ -1,0 +1,70 @@
+group 'sims.michael.gerritslackbot'
+version '1.0'
+
+buildscript {
+    ext.kotlin_version = '1.1.50'
+
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'kotlin'
+apply plugin: 'application'
+
+sourceCompatibility = 1.8
+mainClassName = 'sims.michael.gerritslackbot.Main'
+applicationName = 'gerrit-slack-bot'
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
+
+    compile 'org.slf4j:slf4j-api:1.7.24'
+
+    compile 'com.hierynomus:sshj:0.21.1'
+    compile 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.8.9'
+    compile 'com.fasterxml.jackson.core:jackson-core:2.8.9'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.8.9'
+    compile 'com.fasterxml.jackson.module:jackson-module-kotlin:2.8.9'
+    compile 'com.github.salomonbrys.kodein:kodein:4.1.0'
+    compile 'com.github.salomonbrys.kodein:kodein-conf:4.1.0'
+
+    compile "io.reactivex.rxjava2:rxkotlin:2.0.3"
+    compile "io.reactivex.rxjava2:rxjava:2.1.0"
+
+    compile 'com.squareup.okhttp3:okhttp:3.6.0'
+
+    compile 'org.apache.commons:commons-lang3:3.4'
+
+    compile 'ch.qos.logback:logback-core:1.2.1'
+    compile 'ch.qos.logback:logback-classic:1.2.1'
+
+    compile "com.xenomachina:kotlin-argparser:2.0.3"
+
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+distributions {
+    main {
+        contents {
+            from(new File(rootDir, "README.md"))
+        }
+    }
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}

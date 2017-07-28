@@ -1,0 +1,36 @@
+{
+  "abandoner": {
+    "email": "fry@planex.3000",
+    "name": "Philip J. Fry",
+    "username": "phillipjfry"
+  },
+  "change": {
+    "branch": "master",
+    "id": "12566",
+    "number": "155",
+    "owner": {
+      "email": "fry@planex.3000",
+      "name": "Philip J. Fry",
+      "username": "phillipjfry"
+    },
+    "project": "test",
+    "subject": "Commit subject",
+    "url": "https://planex.3000/gerrit/155"
+  },
+  "patchSet": {
+    "createdOn": 1353169860,
+    "number": "1",
+    "parents": [
+      "2363236"
+    ],
+    "ref": "refs/changes/46/45/1",
+    "revision": "2352355sdfa",
+    "uploader": {
+      "email": "fry@planex.3000",
+      "name": "Philip J. Fry",
+      "username": "phillipjfry"
+    }
+  },
+  "reason": "felt like it",
+  "type": "change-abandoned"
+}

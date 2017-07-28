@@ -1,0 +1,35 @@
+{
+  "change": {
+    "branch": "master",
+    "id": "13413gasd",
+    "number": "32",
+    "owner": {
+      "email": "fry@planex.3000",
+      "name": "Philip J. Fry",
+      "username": "phillipjfry"
+    },
+    "project": "test",
+    "subject": "test subject",
+    "url": "https://planex.3000/gerrit/32"
+  },
+  "patchSet": {
+    "createdOn": 1353128278,
+    "number": "1",
+    "parents": [
+      "234asdfasdf"
+    ],
+    "ref": "refs/changes/32/31/1",
+    "revision": "asdfasdf",
+    "uploader": {
+      "email": "fry@planex.3000",
+      "name": "Philip J. Fry",
+      "username": "phillipjfry"
+    }
+  },
+  "type": "patchset-created",
+  "uploader": {
+    "email": "fry@planex.3000",
+    "name": "Philip J. Fry",
+    "username": "phillipjfry"
+  }
+}
