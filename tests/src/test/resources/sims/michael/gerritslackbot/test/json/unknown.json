@@ -1,0 +1,22 @@
+{
+  "abandoner": {
+    "email": "fry@planex.3000",
+    "name": "Philip J. Fry",
+    "username": "phillipjfry"
+  },
+  "change": {
+    "branch": "master",
+    "id": "12566",
+    "number": "155",
+    "owner": {
+      "email": "fry@planex.3000",
+      "name": "Philip J. Fry",
+      "username": "phillipjfry"
+    },
+    "project": "test",
+    "subject": "Commit subject",
+    "url": "https://planex.3000/gerrit/155"
+  },
+  "reason": "felt like it",
+  "type": "some-new-type"
+}

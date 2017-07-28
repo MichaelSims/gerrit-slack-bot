@@ -1,0 +1,4 @@
+rootProject.name = 'gerrit-slack-bot'
+include 'app'
+include 'tests'
+

@@ -1,0 +1,36 @@
+{
+  "change": {
+    "branch": "master",
+    "id": "35124",
+    "number": "45",
+    "owner": {
+      "email": "fry@planex.3000",
+      "name": "Philip J. Fry",
+      "username": "phillipjfry"
+    },
+    "project": "someProject",
+    "subject": "Add some things",
+    "url": "https://planex.3000/gerrit/45"
+  },
+  "patchSet": {
+    "createdOn": 1353169860,
+    "number": "1",
+    "parents": [
+      "2363236"
+    ],
+    "ref": "refs/changes/46/45/1",
+    "revision": "2352355sdfa",
+    "uploader": {
+      "email": "fry@planex.3000",
+      "name": "Philip J. Fry",
+      "username": "phillipjfry"
+    }
+  },
+  "submitter": {
+    "email": "bender@planex.3000",
+    "name": "Bender \"Bending\" Rodriguez",
+    "username": "bender"
+  },
+  "type": "change-merged",
+  "newRev": "newRev"
+}
