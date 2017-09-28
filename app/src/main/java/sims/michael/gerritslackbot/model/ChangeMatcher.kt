@@ -5,18 +5,21 @@ data class ChangeMatcher(
         val branch: String,
         val subject: String,
         val channel: String?,
-        private val isVerification: Boolean? = null
+        private val isVerificationOnly: Boolean? = null
 ) {
 
     fun matches(event: ChangeEvent): Boolean {
         return project.toLowerCase() in listOf("*", event.change.project.toLowerCase())
                 && branch.toLowerCase() in listOf("*", event.change.branch.toLowerCase())
-                && (isVerification == null || isVerification == event.isVerification)
+                && (isVerificationOnly == null || isVerificationOnly == event.isVerificationOnly)
                 && (subject == "*" || event.change.subject?.safeMatches(subject) ?: false)
     }
 
-    private val ChangeEvent.isVerification: Boolean
-        get() = this is CommentAddedEvent && approvals.orEmpty().any { it.type == "Verified" }
+    private val ChangeEvent.isVerificationOnly: Boolean
+        get() {
+            // True if there are one or more approvals and they all are verified ones
+            return this is CommentAddedEvent && approvals?.all { it.type == "Verified" } == true
+        }
 
     private fun String.safeMatches(regex: String) = try {
         // Prefix with (?i) for a case-insensitive match

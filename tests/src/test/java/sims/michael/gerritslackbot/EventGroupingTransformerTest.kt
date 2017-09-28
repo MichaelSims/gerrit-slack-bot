@@ -61,6 +61,19 @@ class EventGroupingTransformerTest {
         assertEquals("otherChannel", groups.first { it.branch == "feature-two" }.channel)
     }
 
+    @Test
+    fun can_match_events_that_are_only_verifications() {
+        val eventMatchingTransformer = EventGroupingTransformer(listOf(
+                ChangeMatcher("*", "*", "*", channel = null, isVerificationOnly = true),
+                ChangeMatcher("*", "*", "*", "channel")
+        ))
+        val groups = getEventGroupsWithTransformer(eventMatchingTransformer)
+        assertFalse("Change with only a verification vote was matched",
+                groups.any { it.events.any { it.change.id == "2" } })
+        assertTrue("Change with both a verification vote and a code review vote was not matched",
+                groups.any { it.events.any { it.change.id == "3" } })
+    }
+
     private fun getEventGroupsWithTransformer(eventGroupingTransformer: EventGroupingTransformer): List<EventGroup<*>> =
             this::class.java.getResourceAsStream("test/json/events-for-matching.txt")
                     .bufferedReader().lineSequence().toFlowable()

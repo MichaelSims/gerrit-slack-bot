@@ -39,8 +39,10 @@ Gerrit to Slack username mappings:
 # project - exact match on project OR "*" to match all - required
 # branch - exact match on branch OR "*" to match all - required
 # subject - regular expression to match on any part of subject (match is case-insensitive) or "*" to match all - required
-# isVerification - boolean to match on comment added events that are verification approvals - optional
+# isVerificationOnly - boolean to match on comment added events that contain only verification approvals - optional
 #     missing or null means match both verifications and non-verifications
+#     Note that a verification approval that is accompanied by a code review approval is considered a "non-verification"
+#     for the purposes of this test
 # channel - channel to notify - optional. If missing, the event will be dropped (used for filtering unwanted events)
 #
 # Note that order matters... each event will be matched against each matcher in order and the first match wins.
@@ -61,7 +63,7 @@ Event matchers:
 #- project: "*"
 #  branch: "*"
 #  subject: "*"
-#  isVerification: true
+#  isVerificationOnly: true
 
 # Send all commits from feature-branch on project-one to #feature-branch-channel
 #- project: "project-one"
