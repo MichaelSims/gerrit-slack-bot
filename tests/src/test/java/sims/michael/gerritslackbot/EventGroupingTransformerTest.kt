@@ -63,7 +63,7 @@ class EventGroupingTransformerTest {
     }
 
     private fun getEventGroupsWithTransformer(eventGroupingTransformer: EventGroupingTransformer): List<EventGroup<*>> =
-            this::class.java.getResourceAsStream("../test/json/events-for-matching.txt")
+            this::class.java.getResourceAsStream("test/json/events-for-matching.txt")
                     .bufferedReader().lineSequence().toFlowable()
                     .compose(stringToEvent)
                     .ofType<ChangeEvent>()
