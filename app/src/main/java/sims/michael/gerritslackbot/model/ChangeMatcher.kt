@@ -10,11 +10,14 @@ data class ChangeMatcher(
 ) {
 
     fun matches(event: ChangeEvent): Boolean {
-        return project.toLowerCase() in listOf("*", event.change.project.toLowerCase())
-                && branch.toLowerCase() in listOf("*", event.change.branch.toLowerCase())
-                && (isVerificationOnly == null || isVerificationOnly == event.isVerificationOnly)
-                && (changeKind == null || changeKind.toLowerCase() == event.changeKindOrNull?.toLowerCase())
-                && (subject == "*" || event.change.subject?.safeMatches(subject) ?: false)
+        val projectMatches = project.toLowerCase() in listOf("*", event.change.project.toLowerCase())
+        val branchMatches = branch.toLowerCase() in listOf("*", event.change.branch.toLowerCase())
+        val isVerificationOnlyMatches = isVerificationOnly == null || isVerificationOnly == event.isVerificationOnly
+        val eventChangeKind = event.changeKindOrNull
+        val changeKindMatches = changeKind == null || eventChangeKind == null
+                || changeKind.toLowerCase() == eventChangeKind.toLowerCase()
+        val subjectMatches = subject == "*" || event.change.subject?.safeMatches(subject) ?: false
+        return projectMatches && branchMatches && isVerificationOnlyMatches && changeKindMatches && subjectMatches
     }
 
     private val ChangeEvent.isVerificationOnly: Boolean

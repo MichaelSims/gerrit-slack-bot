@@ -82,6 +82,16 @@ class EventGroupingTransformerTest {
                 groups.any { it.events.any { it is PatchSetCreatedEvent && it.patchSet.kind != ChangeKind.REWORK } })
     }
 
+    @Test
+    fun change_kind_matches_for_patch_set_created_events_only() {
+        val eventMatchingTransformer = EventGroupingTransformer(listOf(
+                ChangeMatcher("*", "*", "*", "channel", changeKind = "rework")
+        ))
+        val groups = getEventGroupsWithTransformer(eventMatchingTransformer)
+        assertTrue("Change kind matcher should be applied to PatchSetCreatedEvent only",
+                groups.any { it.events.any { it.change.id == "6" } })
+    }
+
     private fun getEventGroupsWithTransformer(eventGroupingTransformer: EventGroupingTransformer): List<EventGroup<*>> =
             this::class.java.getResourceAsStream("test/json/events-for-matching.txt")
                     .bufferedReader().lineSequence().toFlowable()
