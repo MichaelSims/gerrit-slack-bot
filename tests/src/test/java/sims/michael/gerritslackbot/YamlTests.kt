@@ -31,7 +31,14 @@ class YamlTests {
         assertEquals("https://hooks.slack.example.com/services/id", config.slackApiUrl)
         assertEquals(15L, config.eventBufferTimeoutInSeconds)
         assertEquals(EventGroupToSlackMessageTransformer.Config(
-                "Gerrit Review Bot", "http://www.example.com/icon.png", false), config.slackMessageConfig)
+                "Gerrit Review Bot", "http://www.example.com/icon.png", false,
+                listOf(
+                        ":clapping:", ":parrotbeer:", ":beers:", ":bomb:", ":animal:", ":badger:", ":homerscream:",
+                        ":squirrel:", ":success:", ":arrrggghhh:", ":aw_yeah:", ":blondesassyparrot:", ":borat:",
+                        ":bowdown:", ":celebrate:", ":dancing-penguin:", ":dancing_penguin:", ":dancingfood:",
+                        ":headbang2:"
+                )
+        ), config.slackMessageConfig)
         assertEquals(SSHStreamPublisher.Config(
                 "gerrit.example.com", "username", listOf("/home/gerrit-slack-bot/.ssh/gerrit_service_rsa")),
                 config.gerritStreamConfig)
@@ -40,8 +47,8 @@ class YamlTests {
                 ChangeMatcher("*", "*", "*", null),
                 ChangeMatcher("*", "*", "^WIP: ", null),
                 ChangeMatcher("*", "*", "*", null, true),
-                ChangeMatcher("project-one", "feature-branch", "*", "#feature-branch-channel"),
-                ChangeMatcher("project-two", "*", "*", "#other-channel")
+                ChangeMatcher("project-one", "feature-branch", "*", "#feature-branch-channel", changeKind = "REWORK"),
+                ChangeMatcher("project-two", "*", "*", "#other-channel", changeKind = "REWORK")
         ), config.changeMatchers)
     }
 
@@ -55,7 +62,7 @@ class YamlTests {
                 mapOf("gerrit" to "slack", "chocolate" to "peanut butter"),
                 SSHStreamPublisher.Config("example.com", "username", listOf("somePath", "someOtherPath")),
                 "https://example.com",
-                EventGroupToSlackMessageTransformer.Config("username", "iconUrl", false),
+                EventGroupToSlackMessageTransformer.Config("username", "iconUrl", false, listOf(":one:", ":two:")),
                 Config.HttpConfig(true, "localhost"),
                 30
         )

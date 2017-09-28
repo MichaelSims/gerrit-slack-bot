@@ -8,6 +8,8 @@ import org.reactivestreams.Publisher
 import sims.michael.gerritslackbot.SlackNameResolver
 import sims.michael.gerritslackbot.model.*
 import java.net.URLEncoder
+import java.util.*
+import java.util.concurrent.atomic.AtomicInteger
 
 class EventGroupToSlackMessageTransformer(
         private val slackNameResolver: SlackNameResolver,
@@ -17,7 +19,8 @@ class EventGroupToSlackMessageTransformer(
     data class Config(
             val username: String,
             val iconUrl: String? = null,
-            val directMessagesEnabled: Boolean = false
+            val directMessagesEnabled: Boolean = false,
+            val mergedChangeEmojiList: List<String> = emptyList()
     )
 
     override fun apply(upstream: Flowable<EventGroup<*>>): Publisher<SlackMessage> = upstream.flatMap { eventGroup ->
@@ -112,7 +115,9 @@ class EventGroupToSlackMessageTransformer(
 
     private fun EventGroup<ChangeMergedEvent>.toMergedChangesMessage(): SlackMessage {
         val heading = "${toProjectBranchPrefix()} ${username.resolveSlackName()} has merged ${events.size} " +
-                "${changeOrChanges(events.size)}:"
+                changeOrChanges(events.size) +
+                (if (!config.mergedChangeEmojiList.isEmpty()) " ${nextEmoji()} " else "") +
+                ":"
 
         return SlackMessage(
                 username = config.username,
@@ -124,6 +129,15 @@ class EventGroupToSlackMessageTransformer(
                         text = events.map { it.toSlackSummary() }.joinToString("\n")
                 ))
         )
+    }
+
+    private val maxEmojiIndex = config.mergedChangeEmojiList.size - 1
+    private var emojiIndex = AtomicInteger(maxEmojiIndex)
+
+    private fun nextEmoji(): String {
+        val index = emojiIndex.incrementAndGet().takeIf { it <= maxEmojiIndex } ?: 0
+        if (index == 0) emojiIndex.set(0)
+        return config.mergedChangeEmojiList[index]
     }
 
     private fun EventGroup<*>.toProjectBranchPrefix(): String {

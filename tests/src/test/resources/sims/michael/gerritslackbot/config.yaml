@@ -81,26 +81,26 @@ Event matchers:
   subject: "*"
 
 # Drop all commits that start with WIP in the subject
-#- project: "*"
-#  branch: "*"
-#  subject: "^WIP: "
+- project: "*"
+  branch: "*"
+  subject: "^WIP: "
 
 # Drop all verifications... matchers with null/missing channel consume the event without notifying
-#- project: "*"
-#  branch: "*"
-#  subject: "*"
-#  isVerificationOnly: true
+- project: "*"
+  branch: "*"
+  subject: "*"
+  isVerificationOnly: true
 
 # Send all REWORK commits from feature-branch on project-one to #feature-branch-channel
-#- project: "project-one"
-#  branch: "feature-branch"
-#  subject: "*"
-#  changeKind: "REWORK"
-#  channel: "#feature-branch-channel"
+- project: "project-one"
+  branch: "feature-branch"
+  subject: "*"
+  changeKind: "REWORK"
+  channel: "#feature-branch-channel"
 
 # Send all REWORK commits from project-two to #other-channel
-#- project: "project-two"
-#  branch: "*"
-#  subject: "*"
-#  changeKind: "REWORK"
-#  channel: "#other-channel"
+- project: "project-two"
+  branch: "*"
+  subject: "*"
+  changeKind: "REWORK"
+  channel: "#other-channel"
