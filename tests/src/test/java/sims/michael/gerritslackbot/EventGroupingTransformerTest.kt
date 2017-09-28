@@ -10,9 +10,7 @@ import org.junit.Before
 import org.junit.Test
 import sims.michael.gerritslackbot.container.ObjectMappers
 import sims.michael.gerritslackbot.container.defaultModule
-import sims.michael.gerritslackbot.model.ChangeEvent
-import sims.michael.gerritslackbot.model.ChangeMatcher
-import sims.michael.gerritslackbot.model.EventGroup
+import sims.michael.gerritslackbot.model.*
 
 class EventGroupingTransformerTest {
 
@@ -72,6 +70,16 @@ class EventGroupingTransformerTest {
                 groups.any { it.events.any { it.change.id == "2" } })
         assertTrue("Change with both a verification vote and a code review vote was not matched",
                 groups.any { it.events.any { it.change.id == "3" } })
+    }
+
+    @Test
+    fun can_match_events_based_on_change_kind() {
+        val eventMatchingTransformer = EventGroupingTransformer(listOf(
+                ChangeMatcher("*", "*", "*", "channel", changeKind = "rework")
+        ))
+        val groups = getEventGroupsWithTransformer(eventMatchingTransformer)
+        assertFalse("Some of the changes are not reworks",
+                groups.any { it.events.any { it is PatchSetCreatedEvent && it.patchSet.kind != ChangeKind.REWORK } })
     }
 
     private fun getEventGroupsWithTransformer(eventGroupingTransformer: EventGroupingTransformer): List<EventGroup<*>> =
