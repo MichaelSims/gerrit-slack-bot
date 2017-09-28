@@ -5,8 +5,7 @@ import com.github.salomonbrys.kodein.Kodein
 import com.github.salomonbrys.kodein.instance
 import io.reactivex.rxkotlin.ofType
 import io.reactivex.rxkotlin.toFlowable
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
+import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 import sims.michael.gerritslackbot.container.ObjectMappers
@@ -37,7 +36,7 @@ class EventGroupingTransformerTest {
                 ChangeMatcher("*", "*", "*", "channel")
         ))
         val groups = getEventGroupsWithTransformer(eventMatchingTransformer)
-        assertEquals(1, groups.size)
+        assertFalse(groups.any { it.events.any { it.change.id == "0" } })
     }
 
     @Test
