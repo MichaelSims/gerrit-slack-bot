@@ -34,6 +34,7 @@ class EventGroupingTransformerTest {
                 ChangeMatcher("*", "*", "*", "channel")
         ))
         val groups = getEventGroupsWithTransformer(eventMatchingTransformer)
+        assertGroupsAreNotEmpty(groups)
         assertFalse(groups.any { it.events.any { it.change.id == "0" } })
     }
 
@@ -44,6 +45,7 @@ class EventGroupingTransformerTest {
                 ChangeMatcher("*", "*", "*", "channel")
         ))
         val groups = getEventGroupsWithTransformer(eventMatchingTransformer)
+        assertGroupsAreNotEmpty(groups)
         assertNotNull(groups.firstOrNull { it.project == "Froboztic" })
         assertEquals("otherChannel", groups.first { it.project == "Froboztic" }.channel)
     }
@@ -55,6 +57,7 @@ class EventGroupingTransformerTest {
                 ChangeMatcher("*", "*", "*", "channel")
         ))
         val groups = getEventGroupsWithTransformer(eventMatchingTransformer)
+        assertGroupsAreNotEmpty(groups)
         assertNotNull(groups.firstOrNull { it.branch == "feature-two" })
         assertEquals("otherChannel", groups.first { it.branch == "feature-two" }.channel)
     }
@@ -66,6 +69,7 @@ class EventGroupingTransformerTest {
                 ChangeMatcher("*", "*", "*", "channel")
         ))
         val groups = getEventGroupsWithTransformer(eventMatchingTransformer)
+        assertGroupsAreNotEmpty(groups)
         assertFalse("Change with only a verification vote was matched",
                 groups.any { it.events.any { it.change.id == "2" } })
         assertTrue("Change with both a verification vote and a code review vote was not matched",
@@ -78,8 +82,19 @@ class EventGroupingTransformerTest {
                 ChangeMatcher("*", "*", "*", "channel", changeKind = "rework")
         ))
         val groups = getEventGroupsWithTransformer(eventMatchingTransformer)
+        assertGroupsAreNotEmpty(groups)
         assertFalse("Some of the changes are not reworks",
                 groups.any { it.events.any { it is PatchSetCreatedEvent && it.patchSet.kind != ChangeKind.REWORK } })
+    }
+
+    @Test
+    fun can_match_events_based_on_comment_author() {
+        val eventMatchingTransformer = EventGroupingTransformer(listOf(
+                ChangeMatcher("*", "*", "*", "channel", commentAuthor = "gerrit")
+        ))
+        val groups = getEventGroupsWithTransformer(eventMatchingTransformer)
+        assertTrue("Unexpected events matched",
+                groups.all { it.events.all { it is CommentAddedEvent && it.author.username == "gerrit" } })
     }
 
     @Test
@@ -88,8 +103,14 @@ class EventGroupingTransformerTest {
                 ChangeMatcher("*", "*", "*", "channel", changeKind = "rework")
         ))
         val groups = getEventGroupsWithTransformer(eventMatchingTransformer)
+        assertGroupsAreNotEmpty(groups)
         assertTrue("Change kind matcher should be applied to PatchSetCreatedEvent only",
                 groups.any { it.events.any { it.change.id == "6" } })
+    }
+
+    /** Protect against a common failure case that a logic bug filters everything */
+    private fun assertGroupsAreNotEmpty(groups: List<EventGroup<*>>) {
+        assertFalse("No groups matched!", groups.isEmpty())
     }
 
     private fun getEventGroupsWithTransformer(eventGroupingTransformer: EventGroupingTransformer): List<EventGroup<*>> =

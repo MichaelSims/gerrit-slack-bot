@@ -91,6 +91,12 @@ Event matchers:
   subject: "*"
   isVerificationOnly: true
 
+# Drop all comment added events authored by "gerrit"
+- project: "*"
+  branch: "*"
+  subject: "*"
+  commentAuthor: "gerrit"
+
 # Send all REWORK commits from feature-branch on project-one to #feature-branch-channel
 - project: "project-one"
   branch: "feature-branch"

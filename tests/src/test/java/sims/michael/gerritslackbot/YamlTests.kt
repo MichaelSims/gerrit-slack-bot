@@ -46,7 +46,8 @@ class YamlTests {
         assertEquals(listOf(
                 ChangeMatcher("*", "*", "*", null),
                 ChangeMatcher("*", "*", "^WIP: ", null),
-                ChangeMatcher("*", "*", "*", null, true),
+                ChangeMatcher("*", "*", "*", null, isVerificationOnly = true),
+                ChangeMatcher("*", "*", "*", null, commentAuthor = "gerrit"),
                 ChangeMatcher("project-one", "feature-branch", "*", "#feature-branch-channel", changeKind = "REWORK"),
                 ChangeMatcher("project-two", "*", "*", "#other-channel", changeKind = "REWORK")
         ), config.changeMatchers)

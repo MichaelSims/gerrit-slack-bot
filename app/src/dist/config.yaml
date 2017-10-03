@@ -62,11 +62,13 @@ Gerrit to Slack username mappings:
 # project - exact match on project OR "*" to match all - required
 # branch - exact match on branch OR "*" to match all - required
 # subject - regular expression to match on any part of subject (match is case-insensitive) or "*" to match all - required
+# commentAuthor - exact match on the author of a comment added event. Other event types will not match - optional
+#     missing or null means ignore this match
 # isVerificationOnly - boolean to match on comment added events that contain only verification approvals - optional
 #     missing or null means match both verifications and non-verifications
 #     Note that a verification approval that is accompanied by a code review approval is considered a "non-verification"
 #     for the purposes of this test
-# changeKind - boolean to match on the "kind" of patch if it is a patchset-created event - optional
+# changeKind - exact match on the "kind" of patch if it is a patchset-created event - optional
 #     missing or null means match any change kind
 #     commonly used to avoid notifying for trivial rebases or no code changes
 # channel - channel to notify - optional. If missing, the event will be dropped (used for filtering unwanted events)
@@ -90,6 +92,12 @@ Event matchers:
 #  branch: "*"
 #  subject: "*"
 #  isVerificationOnly: true
+
+# Drop all comment added events authored by "gerrit"
+#- project: "*"
+#  branch: "*"
+#  subject: "*"
+#  commentAuthor: "gerrit"
 
 # Send all REWORK commits from feature-branch on project-one to #feature-branch-channel
 #- project: "project-one"

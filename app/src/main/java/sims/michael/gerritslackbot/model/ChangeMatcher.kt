@@ -5,6 +5,7 @@ data class ChangeMatcher(
         val branch: String,
         val subject: String,
         val channel: String?,
+        private val commentAuthor: String? = null,
         private val isVerificationOnly: Boolean? = null,
         private val changeKind: String? = null
 ) {
@@ -17,8 +18,14 @@ data class ChangeMatcher(
         val changeKindMatches = changeKind == null || eventChangeKind == null
                 || changeKind.toLowerCase() == eventChangeKind.toLowerCase()
         val subjectMatches = subject == "*" || event.change.subject?.safeMatches(subject) ?: false
+        val commentAuthorMatches = commentAuthor == null  ||
+                commentAuthor.toLowerCase() == event.commentAuthorOrNull?.toLowerCase()
         return projectMatches && branchMatches && isVerificationOnlyMatches && changeKindMatches && subjectMatches
+                && commentAuthorMatches
     }
+
+    private val ChangeEvent.commentAuthorOrNull: String?
+        get() = if (this is CommentAddedEvent) author.username else null
 
     private val ChangeEvent.isVerificationOnly: Boolean
         get() {
