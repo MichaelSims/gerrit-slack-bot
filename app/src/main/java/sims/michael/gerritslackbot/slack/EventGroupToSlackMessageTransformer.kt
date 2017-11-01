@@ -51,7 +51,6 @@ class EventGroupToSlackMessageTransformer(
                 icon_url = config.iconUrl,
                 text = heading,
                 channel = slackName,
-                // or better yet, make this disabled by default until you take steps to enable it
                 attachments = listOf(Attachment(
                         fallback = "Summary of changes",
                         text = events.joinToString("\n") { event -> event.toSlackSummary() }
