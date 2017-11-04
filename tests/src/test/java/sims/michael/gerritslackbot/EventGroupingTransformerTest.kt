@@ -92,6 +92,49 @@ class EventGroupingTransformerTest {
                 groups.any { it.events.any { it.change.id == "6" } })
     }
 
+    @Test
+    fun comment_added_events_are_grouped_by_change_owner() {
+        val eventMatchingTransformer = EventGroupingTransformer(listOf(
+                ChangeMatcher("*", "*", "*", "channel")
+        ))
+        val groups = getEventGroupsWithTransformer(eventMatchingTransformer)
+        val fry = "philipjfry"
+
+        // For this test to be useful the test data needs to have more than one comment added event associated with
+        // a change owned by the same user.
+        val commentAddedEvents = groups.flatMap { it.events }.filterIsInstance<CommentAddedEvent>()
+        assertTrue("Fry needs more than one comment on his commits for this test to be valid",
+                commentAddedEvents.groupBy { it.change.owner }.any { it.key.username == fry && it.value.size > 1 })
+
+        assertTrue("There should be a group of comment added events from different authors on commits owned by Fry",
+                groups.any {
+                    it.type == CommentAddedEvent::class.java
+                            && it.username == fry
+                            && it.events.all { it.change.owner.username == fry }
+                })
+    }
+
+    @Test
+    fun change_merged_events_are_grouped_by_change_owner() {
+        val eventMatchingTransformer = EventGroupingTransformer(listOf(
+                ChangeMatcher("*", "*", "*", "channel")
+        ))
+        val groups = getEventGroupsWithTransformer(eventMatchingTransformer)
+        val bender = "bender"
+
+        // For this test to be useful the test data needs to have more than one change merged event for the same user.
+        val changeMergedEvents = groups.flatMap { it.events }.filterIsInstance<ChangeMergedEvent>()
+        assertTrue("Bender needs more than one changes merged for this test to be valid",
+                changeMergedEvents.groupBy { it.change.owner }.any { it.key.username == bender && it.value.size > 1 })
+
+        assertTrue("There should be a group of change merged events from different submitters on commits owned by Bender",
+                groups.any {
+                    it.type == ChangeMergedEvent::class.java
+                            && it.username == bender
+                            && it.events.all { it.change.owner.username == bender }
+                })
+    }
+
     private fun getEventGroupsWithTransformer(eventGroupingTransformer: EventGroupingTransformer): List<EventGroup<*>> =
             this::class.java.getResourceAsStream("test/json/events-for-matching.txt")
                     .bufferedReader().lineSequence().toFlowable()

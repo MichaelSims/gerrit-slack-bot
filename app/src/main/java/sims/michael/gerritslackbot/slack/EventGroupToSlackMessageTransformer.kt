@@ -77,8 +77,8 @@ class EventGroupToSlackMessageTransformer(
 
     private fun EventGroup<CommentAddedEvent>.toNewCommentsMessage(): SlackMessage {
         val heading = "${toProjectBranchPrefix()} " +
-                "${username.resolveSlackName()} has added " +
-                "${events.size} new ${commentOrComments(events.size)}:"
+                "${events.size} new ${commentOrComments(events.size)} added " +
+                "for commits owned by ${username.resolveSlackName()}:"
 
         return SlackMessage(
                 username = config.username,
@@ -87,34 +87,36 @@ class EventGroupToSlackMessageTransformer(
                 text = heading,
                 attachments = listOf(Attachment(
                         fallback = "Summary of comments",
-                        text = events.flatMap { event ->
+                        text = events.map { event ->
                             mutableListOf<String>().apply {
+                                val author = event.author.username.resolveSlackName(atMention = false)
+                                add("$author ...")
                                 val codeReview = event.approvals.orEmpty().find { it.type == "Code-Review" }
                                 val codeReviewVote = codeReview?.value?.toIntOrNull()
                                 if (codeReviewVote != null) {
-                                    add("*${codeReviewVote.voteToString()}* ${event.toSlackSummary()}")
+                                    add("... *${codeReviewVote.voteToString()}* ${event.toSlackSummary()}")
                                 }
 
                                 val verification = event.approvals.orEmpty().find { it.type == "Verified" }
                                 val verificationVote = verification?.value?.toIntOrNull()
                                 if (verificationVote != null) {
-                                    add("*${verificationVote.verifyVoteToString()}* ${event.toSlackSummary()}")
+                                    add("... *${verificationVote.verifyVoteToString()}* ${event.toSlackSummary()}")
                                 }
 
                                 if (!event.toSlackShortComment().isNullOrBlank()) {
-                                    add("Commented on ${event.toSlackSummary()}: " +
+                                    add("... commented on ${event.toSlackSummary()}: " +
                                             "\"${event.toSlackShortComment()}\"")
                                 }
                             }
-                        }.joinToString("\n"),
+                        }.joinIterables("").joinToString("\n"),
                         mrkdwn_in = listOf("text")
                 ))
         )
     }
 
     private fun EventGroup<ChangeMergedEvent>.toMergedChangesMessage(): SlackMessage {
-        val heading = "${toProjectBranchPrefix()} ${username.resolveSlackName()} has merged ${events.size} " +
-                changeOrChanges(events.size) +
+        val heading = "${toProjectBranchPrefix()} ${events.size} ${changeOrChanges(events.size)} owned by " +
+                "${username.resolveSlackName()} were merged" +
                 (if (!config.mergedChangeEmojiList.isEmpty()) " ${nextEmoji()} " else "") +
                 ":"
 
@@ -125,7 +127,13 @@ class EventGroupToSlackMessageTransformer(
                 text = heading,
                 attachments = listOf(Attachment(
                         fallback = "Summary of changes",
-                        text = events.map { it.toSlackSummary() }.joinToString("\n")
+                        text = events.joinToString("\n") { event ->
+                            event.toSlackSummary().let {
+                                if (event.submitter != event.change.owner) {
+                                    "$it (submitted by ${event.submitter.username.resolveSlackName(atMention = false)})"
+                                } else it
+                            }
+                        }
                 ))
         )
     }
@@ -153,6 +161,16 @@ class EventGroupToSlackMessageTransformer(
         } else {
             this
         }
+    }
+
+    private fun <T> Iterable<Iterable<T>>.joinIterables(separator: T): List<T> {
+        var first = false
+        val result = ArrayList<T>()
+        for (element in this) {
+            if (first) first = false else result.add(separator)
+            result.addAll(element)
+        }
+        return result
     }
 
     private fun Int.voteToString(): String = (if (this > 0) "+$this" else this.toString()) + "'d"

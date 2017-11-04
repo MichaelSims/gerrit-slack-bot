@@ -54,7 +54,7 @@ class EventGroupingTransformer(
                             CommentAddedEvent::class.java,
                             event.change.project,
                             event.change.branch,
-                            event.author.username,
+                            event.change.owner.username,
                             matcher.channel
                     )
                 } else null
@@ -70,7 +70,7 @@ class EventGroupingTransformer(
                             ChangeMergedEvent::class.java,
                             event.change.project,
                             event.change.branch,
-                            event.submitter.username,
+                            event.change.owner.username,
                             matcher.channel
                     )
                 } else null
