@@ -5,6 +5,5 @@ interface SlackNameResolver {
 }
 
 class DefaultSlackNameResolver(private val usernameMap: Map<String, String>) : SlackNameResolver {
-    override operator fun get(key: String?): String? =
-            (usernameMap[key] ?: usernameMap["*"])?.let { if (it.startsWith("@")) it else "@$it" }
+    override operator fun get(key: String?): String? = (usernameMap[key] ?: usernameMap["*"])?.trimStart('@')
 }

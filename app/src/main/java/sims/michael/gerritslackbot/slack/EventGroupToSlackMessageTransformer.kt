@@ -43,7 +43,7 @@ class EventGroupToSlackMessageTransformer(
 
     /** Returns a "reviewer added" slack message via DM is the username is recognized, null otherwise */
     private fun EventGroup<ReviewerAddedEvent>.toReviewerAddedMessage(): SlackMessage? {
-        val slackName = slackNameResolver[username] ?: return null
+        val slackName = slackNameResolver[username]?.let { "@$it" } ?: return null
         val heading = "Hi there! You have been added as a reviewer to the following ${commitOrCommits(events.size)} " +
                 "in ${toProjectBranchPrefix()}:"
         return SlackMessage(
@@ -146,8 +146,13 @@ class EventGroupToSlackMessageTransformer(
         return "<$projectBranchLink|[$project:$branch]>"
     }
 
-    private fun String.resolveSlackName() = slackNameResolver[this].let { slackName ->
-        if (slackName != null) "<$slackName> ($this)" else this
+    private fun String.resolveSlackName(atMention: Boolean = true) = slackNameResolver[this].let { slackName ->
+        if (slackName != null) {
+            val formattedName = if (atMention) "<@$slackName>" else slackName
+            "$formattedName ($this)"
+        } else {
+            this
+        }
     }
 
     private fun Int.voteToString(): String = (if (this > 0) "+$this" else this.toString()) + "'d"
