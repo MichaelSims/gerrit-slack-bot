@@ -46,11 +46,13 @@ Slack message configuration: # required
 # Gerrit stream configuration - required
 #
 # - SSH host (required)
+# - port is ssh port. Can be omitted in which case default 22 port will be used
 # - username - Gerrit username allowed to subscribe to stream-events (required)
 # - privateKeyLocations is a list of paths to SSH private keys to use, which can be
 #      omitted if your ssh_config file provides the necessary details.
 Gerrit stream configuration:
   host: "gerrit.example.com"
+  port: 2222
   username: "username"
   privateKeyLocations:
   - "/home/gerrit-slack-bot/.ssh/gerrit_service_rsa"

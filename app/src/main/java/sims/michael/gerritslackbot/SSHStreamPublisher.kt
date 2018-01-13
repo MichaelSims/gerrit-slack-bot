@@ -15,8 +15,9 @@ class SSHStreamPublisher(sshClientProvider: () -> SSHClient, config: Config) : F
     private val log = logger()
 
     data class Config(
-            val host: String,
             val username: String,
+            val host: String,
+            val port: Int = SSHClient.DEFAULT_PORT,
             val privateKeyLocations: List<String> = emptyList(),
             val command: String = DEFAULT_COMMAND
     )
@@ -28,7 +29,7 @@ class SSHStreamPublisher(sshClientProvider: () -> SSHClient, config: Config) : F
                 val sshClient = sshClientProvider()
                 sshClient.apply {
                     addHostKeyVerifier(PromiscuousVerifier())
-                    connect(config.host)
+                    connect(config.host, config.port)
                     connection.keepAlive.keepAliveInterval = 5
                     if (config.privateKeyLocations.isEmpty()) {
                         authPublickey(config.username)
