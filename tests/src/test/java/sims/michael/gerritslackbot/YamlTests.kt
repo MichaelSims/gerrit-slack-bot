@@ -24,7 +24,6 @@ class YamlTests {
         objectMapper = container.instance(ObjectMappers.YAML)
     }
 
-
     @Test
     fun can_deserialize() {
         val config = objectMapper.readValue(this::class.java.getResourceAsStream("config.yaml"), Config::class.java)
@@ -40,7 +39,11 @@ class YamlTests {
                 )
         ), config.slackMessageConfig)
         assertEquals(SSHStreamPublisher.Config(
-                "gerrit.example.com", "username", listOf("/home/gerrit-slack-bot/.ssh/gerrit_service_rsa")),
+                host = "gerrit.example.com",
+                port = 2222,
+                username = "username",
+                privateKeyLocations = listOf("/home/gerrit-slack-bot/.ssh/gerrit_service_rsa")
+        ),
                 config.gerritStreamConfig)
         assertEquals(mapOf("gerrit_username" to "slack_username"), config.gerritToSlackMap)
         assertEquals(listOf(
@@ -60,7 +63,11 @@ class YamlTests {
                         ChangeMatcher("*", "branch", "*", null)
                 ),
                 mapOf("gerrit" to "slack", "chocolate" to "peanut butter"),
-                SSHStreamPublisher.Config("example.com", "username", listOf("somePath", "someOtherPath")),
+                SSHStreamPublisher.Config(
+                        host = "example.com",
+                        username = "username",
+                        privateKeyLocations = listOf("somePath", "someOtherPath")
+                ),
                 "https://example.com",
                 EventGroupToSlackMessageTransformer.Config("username", "iconUrl", false, listOf(":one:", ":two:")),
                 Config.HttpConfig(true, "localhost"),

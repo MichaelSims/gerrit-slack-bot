@@ -1,6 +1,7 @@
 # Example configuration. This is mapped to the data class [sims.michael.gerritslackbot.model.Config]
 
 # Incoming webhook URL - required
+# See https://api.slack.com/incoming-webhooks fro details
 Slack incoming webhook URL: "https://hooks.slack.example.com/services/id"
 
 # The script buffers gerrit events as "bursts". A burst is a group of events that are followed by a minimum amount
@@ -43,10 +44,13 @@ Slack message configuration: # required
 
 # Gerrit stream configuration - required
 #
-# host and username are required. privateKeyLocations is a list of paths to SSH private keys to use, which can be
-# omitted if your ssh_config file provides the necessary details.
+# host and username are required.
+# port is ssh port. Can be omitted is which case default 22 port will be used
+# privateKeyLocations is a list of paths to SSH private keys to use, which can be
+#     omitted if your ssh_config file provides the necessary details.
 Gerrit stream configuration:
   host: "gerrit.example.com"
+  port: 2222
   username: "username"
   privateKeyLocations:
   - "/home/gerrit-slack-bot/.ssh/gerrit_service_rsa"
