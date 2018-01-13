@@ -21,7 +21,6 @@ Event buffer timeout in seconds: 15
 Slack message configuration: # required
   username: "Gerrit Review Bot"
   iconUrl: "http://www.example.com/icon.png"
-  gerritBaseUrl: https
   directMessagesEnabled: false
   mergedChangeEmojiList:
   - ":clapping:"
