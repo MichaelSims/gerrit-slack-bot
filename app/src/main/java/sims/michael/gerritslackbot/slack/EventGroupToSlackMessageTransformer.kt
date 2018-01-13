@@ -184,18 +184,13 @@ class EventGroupToSlackMessageTransformer(
     private fun PatchSetEvent.toSlackSummary() =
             "<${change.gerritChangeUrl()}|${change.subject?.escapeHtml()} (patch ${patchSet.number})>"
 
-    private fun ChangeEvent.gerritBaseUrl() = config.gerritUrl ?: baseUrlAndChangeNo(change.url).first
+    private fun ChangeEvent.gerritBaseUrl() =
+            config.gerritUrl ?: change.url?.let { gerritBaseUrlRegex.matchEntire(it)?.groupValues }?.get(1)
 
-    private fun ChangeAttribute.gerritChangeUrl() = when {
-        config.gerritUrl == null -> url
-        else -> "${config.gerritUrl}/${baseUrlAndChangeNo(url).second}"
-    }
+    private fun ChangeAttribute.gerritChangeUrl() =
+            if (config.gerritUrl == null) url else "${config.gerritUrl}/$number"
 
     private val gerritBaseUrlRegex = "^(http.*)/(\\d+)$".toRegex()
-    private fun baseUrlAndChangeNo(url: String?): Pair<String?, String?> {
-        val groups = url?.let { gerritBaseUrlRegex.matchEntire(it)?.groupValues }
-        return Pair(groups?.get(1), groups?.get(2))
-    }
 
     private fun CommentAddedEvent.toSlackShortComment(): String? {
         val delimiter = "\n\n"
