@@ -43,7 +43,7 @@ class EventGroupToSlackMessageTransformer(
 
     /** Returns a "reviewer added" slack message via DM is the username is recognized, null otherwise */
     private fun EventGroup<ReviewerAddedEvent>.toReviewerAddedMessage(): SlackMessage? {
-        val slackName = slackNameResolver[username]?.let { "@$it" } ?: return null
+        val slackName = slackNameResolver[username]?.let { "@$it" }
         val heading = "Hi there! You have been added as a reviewer to the following ${commitOrCommits(events.size)} " +
                 "in ${toProjectBranchPrefix()}:"
         return SlackMessage(
@@ -53,7 +53,7 @@ class EventGroupToSlackMessageTransformer(
                 channel = slackName,
                 attachments = listOf(Attachment(
                         fallback = "Summary of changes",
-                        text = events.joinToString("\n") { event -> event.toSlackSummary() }
+                        text = events.map { it.toSlackSummary() }.joinToString("\n")
                 ))
         )
     }
@@ -174,7 +174,11 @@ class EventGroupToSlackMessageTransformer(
     }
 
     private fun Int.voteToString(): String = (if (this > 0) "+$this" else this.toString()) + "'d"
-    private fun Int.verifyVoteToString(): String = if (this > 0) "Verified (+1)" else "Failed to verify (-1)"
+    private fun Int.verifyVoteToString(): String = when {
+        this > 0 -> "Verified (+1)"
+        this < 0 -> "Failed to verify (-1)"
+        else -> "Did not verify (0)"
+    }
 
     private fun changeOrChanges(size: Int): String = if (size == 1) "change" else "changes"
     private fun commentOrComments(size: Int): String = if (size == 1) "comment" else "comments"
@@ -188,7 +192,7 @@ class EventGroupToSlackMessageTransformer(
             config.gerritUrl ?: change.url?.let { gerritBaseUrlRegex.matchEntire(it)?.groupValues }?.get(1)
 
     private fun ChangeAttribute.gerritChangeUrl() =
-            if (config.gerritUrl == null) url else "${config.gerritUrl}/$number"
+            if (config.gerritUrl == null) url else "${config.gerritUrl}/$number/${currentPatchSet?.number}"
 
     private val gerritBaseUrlRegex = "^(http.*)/(\\d+)$".toRegex()
 
@@ -199,11 +203,4 @@ class EventGroupToSlackMessageTransformer(
                 .joinToString(delimiter).escapeHtml()
     }
 
-    private fun <K : Any?, V> Map<K?, V>.filterNotNullKeys(): Map<K, V> {
-        val destination: MutableMap<K, V> = LinkedHashMap<K, V>()
-        for ((key, value) in this) {
-            if (key != null) destination[key] = value
-        }
-        return destination
-    }
 }
