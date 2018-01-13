@@ -16,9 +16,12 @@ Event buffer timeout in seconds: 15
 #
 # mergedChangeEmoji: If this list is present and non-empty, an emoji from it will be selected for notifications
 # for merged change events. Use if you want to have fun celebrating a change getting merged. :)
+# - gerritUrl: base Gerrit URL used to render change links in Slack notifications. If null base Gerrit url
+#       will be retrieved from ChangeEvent data. This can be helpful in cases when Gerrit is behind reverse http proxy
 Slack message configuration: # required
   username: "Gerrit Review Bot"
   iconUrl: "http://www.example.com/icon.png"
+#  gerritUrl: "http://localhost:8080/gerrit"
   directMessagesEnabled: false
   mergedChangeEmojiList:
   - ":clapping:"
