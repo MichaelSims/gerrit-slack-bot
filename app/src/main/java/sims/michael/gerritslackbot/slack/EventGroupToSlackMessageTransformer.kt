@@ -2,7 +2,6 @@ package sims.michael.gerritslackbot.slack
 
 import io.reactivex.Flowable
 import io.reactivex.FlowableTransformer
-import okhttp3.HttpUrl
 import org.apache.commons.lang3.StringEscapeUtils
 import org.reactivestreams.Publisher
 import sims.michael.gerritslackbot.SlackNameResolver
@@ -19,6 +18,7 @@ class EventGroupToSlackMessageTransformer(
     data class Config(
             val username: String,
             val iconUrl: String? = null,
+            val gerritUrl: String? = null,
             val directMessagesEnabled: Boolean = false,
             val mergedChangeEmojiList: List<String> = emptyList()
     )
@@ -53,7 +53,7 @@ class EventGroupToSlackMessageTransformer(
                 channel = slackName,
                 attachments = listOf(Attachment(
                         fallback = "Summary of changes",
-                        text = events.joinToString("\n") { event -> event.toSlackSummary() }
+                        text = events.map { it.toSlackSummary() }.joinToString("\n")
                 ))
         )
     }
@@ -148,7 +148,7 @@ class EventGroupToSlackMessageTransformer(
     }
 
     private fun EventGroup<*>.toProjectBranchPrefix(): String {
-        val baseUrl = HttpUrl.parse(events.first().change.url).let { "${it.scheme()}://${it.host()}" }
+        val baseUrl =  events.first().gerritBaseUrl()
         val projectBranchLink = "$baseUrl/#/q/project:${project.escapeUrlParameter()}" +
                 "+branch:${branch.escapeUrlParameter()}+status:open"
         return "<$projectBranchLink|[$project:$branch]>"
@@ -174,7 +174,11 @@ class EventGroupToSlackMessageTransformer(
     }
 
     private fun Int.voteToString(): String = (if (this > 0) "+$this" else this.toString()) + "'d"
-    private fun Int.verifyVoteToString(): String = if (this > 0) "Verified (+1)" else "Failed to verify (-1)"
+    private fun Int.verifyVoteToString(): String = when {
+        this > 0 -> "Verified (+1)"
+        this < 0 -> "Failed to verify (-1)"
+        else -> "Did not verify (0)"
+    }
 
     private fun changeOrChanges(size: Int): String = if (size == 1) "change" else "changes"
     private fun wasOrWere(size: Int): String = if (size == 1) "was" else "were"
@@ -182,9 +186,15 @@ class EventGroupToSlackMessageTransformer(
     private fun commitOrCommits(size: Int): String = if (size == 1) "commit" else "commits"
     private fun String.escapeHtml(): String? = StringEscapeUtils.escapeHtml4(this)
     private fun String.escapeUrlParameter(): String? = URLEncoder.encode(this, "UTF-8")
-    private fun PatchSetEvent.toSlackSummary(): String {
-        return "<${change.url}|${change.subject?.escapeHtml()} (patch ${patchSet.number})>"
-    }
+    private fun PatchSetEvent.toSlackSummary() =
+            "<${change.gerritChangeUrl()}|${change.subject?.escapeHtml()} (patch ${patchSet.number})>"
+
+    private val gerritBaseUrlRegex = "^(http.*)/(\\d+)$".toRegex()
+    private fun ChangeEvent.gerritBaseUrl() =
+            config.gerritUrl ?: change.url?.let { gerritBaseUrlRegex.matchEntire(it)?.groupValues }?.get(1)
+
+    private fun ChangeAttribute.gerritChangeUrl() =
+            if (config.gerritUrl == null) url else "${config.gerritUrl}/$number/${currentPatchSet?.number}"
 
     private fun CommentAddedEvent.toSlackShortComment(): String? {
         val delimiter = "\n\n"
