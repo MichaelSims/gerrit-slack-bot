@@ -174,7 +174,11 @@ class EventGroupToSlackMessageTransformer(
     }
 
     private fun Int.voteToString(): String = (if (this > 0) "+$this" else this.toString()) + "'d"
-    private fun Int.verifyVoteToString(): String = if (this > 0) "Verified (+1)" else "Failed to verify (-1)"
+    private fun Int.verifyVoteToString(): String = when {
+        this > 0 -> "Verified (+1)"
+        this < 0 -> "Failed to verify (-1)"
+        else -> "Did not verify (0)"
+    }
 
     private fun changeOrChanges(size: Int): String = if (size == 1) "change" else "changes"
     private fun wasOrWere(size: Int): String = if (size == 1) "was" else "were"
