@@ -184,7 +184,7 @@ data class RefUpdatedEvent(
 data class UnknownEvent(
         override val type: String,
         override val eventCreatedOn: Long,
-        @get:JsonAnyGetter val nodes: MutableMap<String, Any?> = mutableMapOf<String, Any?>()
+        @get:JsonAnyGetter val nodes: MutableMap<String, Any?> = mutableMapOf()
 ) : Event() {
 
     @JsonAnySetter operator fun set(key: String, value: Any?) = nodes.put(key, value)

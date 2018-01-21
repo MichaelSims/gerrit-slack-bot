@@ -19,7 +19,7 @@ class EventGroupingTransformer(
         /* Reviewers Added - filters are not applied (messages will be addressed via DM if the reviewer is recognized) */
         val reviewerAddedEvents = events.filterIsInstance(ReviewerAddedEvent::class.java)
         val reviewerAddedMessages = reviewerAddedEvents.groupBy { event ->
-            EventGroup<ReviewerAddedEvent>(
+            EventGroup(
                     ReviewerAddedEvent::class.java,
                     event.change.project,
                     event.change.branch,
@@ -34,7 +34,7 @@ class EventGroupingTransformer(
         val newChanges = patchSetCreatedEvents.groupBy { event ->
             changeMatchers.firstOrNull { it.matches(event) }?.let { matcher ->
                 if (matcher.channel != null) {
-                    EventGroup<PatchSetCreatedEvent>(
+                    EventGroup(
                             PatchSetCreatedEvent::class.java,
                             event.change.project,
                             event.change.branch,
@@ -50,7 +50,7 @@ class EventGroupingTransformer(
         val newComments = commentAddedEvents.groupBy { event ->
             changeMatchers.firstOrNull { it.matches(event) }?.let { matcher ->
                 if (matcher.channel != null) {
-                    EventGroup<CommentAddedEvent>(
+                    EventGroup(
                             CommentAddedEvent::class.java,
                             event.change.project,
                             event.change.branch,
@@ -66,7 +66,7 @@ class EventGroupingTransformer(
         val mergedChanges = changeMergedEvents.groupBy { event ->
             changeMatchers.firstOrNull { it.matches(event) }?.let { matcher ->
                 if (matcher.channel != null) {
-                    EventGroup<ChangeMergedEvent>(
+                    EventGroup(
                             ChangeMergedEvent::class.java,
                             event.change.project,
                             event.change.branch,

@@ -22,6 +22,6 @@ class SlackNotifier(
         if (response.code() != 200) throw HttpException(response.code(), response.message(), response.body().string())
     }
 
-    class HttpException(code: Int, message: String?, val body: String?) : RuntimeException("$code $message $body")
+    class HttpException(code: Int, message: String?, body: String?) : RuntimeException("$code $message $body")
 
 }

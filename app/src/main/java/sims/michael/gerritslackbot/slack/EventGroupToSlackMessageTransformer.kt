@@ -70,7 +70,7 @@ class EventGroupToSlackMessageTransformer(
                 text = heading,
                 attachments = listOf(Attachment(
                         fallback = "Summary of changes",
-                        text = events.map { it.toSlackSummary() }.joinToString("\n")
+                        text = events.joinToString("\n") { it.toSlackSummary() }
                 ))
         )
     }
@@ -192,11 +192,4 @@ class EventGroupToSlackMessageTransformer(
                 .joinToString(delimiter).escapeHtml()
     }
 
-    private fun <K : Any?, V> Map<K?, V>.filterNotNullKeys(): Map<K, V> {
-        val destination: MutableMap<K, V> = LinkedHashMap<K, V>()
-        for ((key, value) in this) {
-            if (key != null) destination[key] = value
-        }
-        return destination
-    }
 }
