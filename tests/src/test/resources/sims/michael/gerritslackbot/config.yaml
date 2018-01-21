@@ -10,9 +10,9 @@ Event buffer timeout in seconds: 15
 
 # Slack message configuration - required
 #
-# username is required, all else is optional
+# All properties are optional.
 #
-# - username: required
+# - username: if null or empty Incoming Webhook configured user name will be used
 # - iconUrl: if null or empty Incoming Webhook configured user icon will be used
 # - directMessagesEnabled: The script can send direct messages when recognized users are added as reviewers.
 #      To enable this, set directMessagesEnabled to true
