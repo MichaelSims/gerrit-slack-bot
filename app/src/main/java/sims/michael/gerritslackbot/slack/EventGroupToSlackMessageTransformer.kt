@@ -116,7 +116,7 @@ class EventGroupToSlackMessageTransformer(
 
     private fun EventGroup<ChangeMergedEvent>.toMergedChangesMessage(): SlackMessage {
         val heading = "${toProjectBranchPrefix()} ${events.size} ${changeOrChanges(events.size)} owned by " +
-                "${username.resolveSlackName()} were merged" +
+                "${username.resolveSlackName()} ${wasOrWere(events.size)} merged" +
                 (if (!config.mergedChangeEmojiList.isEmpty()) " ${nextEmoji()} " else "") +
                 ":"
 
@@ -177,6 +177,7 @@ class EventGroupToSlackMessageTransformer(
     private fun Int.verifyVoteToString(): String = if (this > 0) "Verified (+1)" else "Failed to verify (-1)"
 
     private fun changeOrChanges(size: Int): String = if (size == 1) "change" else "changes"
+    private fun wasOrWere(size: Int): String = if (size == 1) "was" else "were"
     private fun commentOrComments(size: Int): String = if (size == 1) "comment" else "comments"
     private fun commitOrCommits(size: Int): String = if (size == 1) "commit" else "commits"
     private fun String.escapeHtml(): String? = StringEscapeUtils.escapeHtml4(this)
