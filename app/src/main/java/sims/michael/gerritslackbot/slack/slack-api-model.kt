@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class SlackMessage(
         val text: String,
-        val username: String,
+        val username: String? = null,
         val icon_url: String? = null,
         val icon_emoji: String? = null,
         val channel: String? = null,
