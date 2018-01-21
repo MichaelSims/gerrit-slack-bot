@@ -1,6 +1,7 @@
 # Example configuration. This is mapped to the data class [sims.michael.gerritslackbot.model.Config]
 
-# Incoming webhook URL - required
+# Incoming Webhook URL - required
+# See https://api.slack.com/incoming-webhooks for details
 Slack incoming webhook URL: "https://hooks.slack.example.com/services/id"
 
 # The script buffers gerrit events as "bursts". A burst is a group of events that are followed by a minimum amount
@@ -11,11 +12,12 @@ Event buffer timeout in seconds: 15
 #
 # username is required, all else is optional
 #
-# Note that the script can send direct messages when recognized users are added as reviewers. To enable this,
-# set directMessagesEnabled to true
-#
-# mergedChangeEmoji: If this list is present and non-empty, an emoji from it will be selected for notifications
-# for merged change events. Use if you want to have fun celebrating a change getting merged. :)
+# - username: required
+# - iconUrl: if null or empty Incoming Webhook configured user icon will be used
+# - directMessagesEnabled: The script can send direct messages when recognized users are added as reviewers.
+#      To enable this, set directMessagesEnabled to true
+# - mergedChangeEmoji: If this list is present and non-empty, an emoji from it will be selected for notifications
+#      for merged change events. Use if you want to have fun celebrating a change getting merged. :)
 Slack message configuration: # required
   username: "Gerrit Review Bot"
   iconUrl: "http://www.example.com/icon.png"
@@ -43,8 +45,10 @@ Slack message configuration: # required
 
 # Gerrit stream configuration - required
 #
-# host and username are required. privateKeyLocations is a list of paths to SSH private keys to use, which can be
-# omitted if your ssh_config file provides the necessary details.
+# - SSH host (required)
+# - username - Gerrit username allowed to subscribe to stream-events (required)
+# - privateKeyLocations is a list of paths to SSH private keys to use, which can be
+#      omitted if your ssh_config file provides the necessary details.
 Gerrit stream configuration:
   host: "gerrit.example.com"
   username: "username"
