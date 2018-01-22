@@ -2,7 +2,6 @@ package sims.michael.gerritslackbot.slack
 
 import io.reactivex.Flowable
 import io.reactivex.FlowableTransformer
-import okhttp3.HttpUrl
 import org.apache.commons.lang3.StringEscapeUtils
 import org.reactivestreams.Publisher
 import sims.michael.gerritslackbot.SlackNameResolver
@@ -19,6 +18,7 @@ class EventGroupToSlackMessageTransformer(
     data class Config(
             val username: String? = null,
             val iconUrl: String? = null,
+            val gerritUrl: String? = null,
             val directMessagesEnabled: Boolean = false,
             val mergedChangeEmojiList: List<String> = emptyList()
     )
@@ -148,7 +148,7 @@ class EventGroupToSlackMessageTransformer(
     }
 
     private fun EventGroup<*>.toProjectBranchPrefix(): String {
-        val baseUrl = HttpUrl.parse(events.first().change.url).let { "${it.scheme()}://${it.host()}" }
+        val baseUrl = config.gerritUrl ?: events.first().change.url?.let { formatGerritBaseUrl(it) }
         val projectBranchLink = "$baseUrl/#/q/project:${project.escapeUrlParameter()}" +
                 "+branch:${branch.escapeUrlParameter()}+status:open"
         return "<$projectBranchLink|[$project:$branch]>"
@@ -187,8 +187,13 @@ class EventGroupToSlackMessageTransformer(
     private fun String.escapeHtml(): String? = StringEscapeUtils.escapeHtml4(this)
     private fun String.escapeUrlParameter(): String? = URLEncoder.encode(this, "UTF-8")
     private fun PatchSetEvent.toSlackSummary(): String {
-        return "<${change.url}|${change.subject?.escapeHtml()} (patch ${patchSet.number})>"
+        val changeUrl = if (config.gerritUrl != null) change.gerritChangeUrl(config.gerritUrl) else change.url
+        return "<$changeUrl|${change.subject?.escapeHtml()}" +
+                " (patch ${patchSet.number})>"
     }
+
+    private fun ChangeAttribute.gerritChangeUrl(gerritUrl: String) =
+            formatGerritChangeUrl(gerritUrl, number, currentPatchSet?.number)
 
     private fun CommentAddedEvent.toSlackShortComment(): String? {
         val delimiter = "\n\n"
