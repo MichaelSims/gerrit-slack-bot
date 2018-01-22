@@ -2,7 +2,6 @@ package sims.michael.gerritslackbot.slack
 
 import io.reactivex.Flowable
 import io.reactivex.FlowableTransformer
-import org.apache.commons.lang3.StringEscapeUtils
 import org.reactivestreams.Publisher
 import sims.michael.gerritslackbot.SlackNameResolver
 import sims.michael.gerritslackbot.model.*
@@ -184,11 +183,11 @@ class EventGroupToSlackMessageTransformer(
     private fun wasOrWere(size: Int): String = if (size == 1) "was" else "were"
     private fun commentOrComments(size: Int): String = if (size == 1) "comment" else "comments"
     private fun commitOrCommits(size: Int): String = if (size == 1) "commit" else "commits"
-    private fun String.escapeHtml(): String? = StringEscapeUtils.escapeHtml4(this)
+    private fun String.escapeHtmlForSlack(): String? = replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
     private fun String.escapeUrlParameter(): String? = URLEncoder.encode(this, "UTF-8")
     private fun PatchSetEvent.toSlackSummary(): String {
         val changeUrl = if (config.gerritUrl != null) change.gerritChangeUrl(config.gerritUrl) else change.url
-        return "<$changeUrl|${change.subject?.escapeHtml()}" +
+        return "<$changeUrl|${change.subject?.escapeHtmlForSlack()}" +
                 " (patch ${patchSet.number})>"
     }
 
@@ -199,7 +198,7 @@ class EventGroupToSlackMessageTransformer(
         val delimiter = "\n\n"
         return comment.split(delimiter)
                 .filterNot { it.contains("Patch Set \\d+".toRegex()) }
-                .joinToString(delimiter).escapeHtml()
+                .joinToString(delimiter).escapeHtmlForSlack()
     }
 
 }
