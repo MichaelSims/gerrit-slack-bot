@@ -68,8 +68,8 @@ Gerrit to Slack username mappings:
 # List of event matchers - required
 #
 # This is a list of matcher definitions for gerrit stream events. Each item in the list has the following properties:
-# project - exact match on project OR "*" to match all - required
-# branch - exact match on branch OR "*" to match all - required
+# project - exact match on project OR "*" to match all OR regex match if value begins with ^- required
+# branch - exact match on branch OR "*" to match all OR regex match if value begins with ^ - required
 # subject - regular expression to match on any part of subject (match is case-insensitive) or "*" to match all - required
 # isVerificationOnly - boolean to match on comment added events that contain only verification approvals - optional
 #     missing or null means match both verifications and non-verifications
@@ -93,6 +93,14 @@ Event matchers:
 #- project: "*"
 #  branch: "*"
 #  subject: "^WIP: "
+
+# Drop all commits where project name starts with 'sandbox/'
+#- project: "^sandbox/.*"
+#  branch: "*"
+
+# Drop all commits where branch name starts with 'sandbox/'
+#- project: "*"
+#  branch: "^sandbox/.*"
 
 # Drop all verifications... matchers with null/missing channel consume the event without notifying
 #- project: "*"

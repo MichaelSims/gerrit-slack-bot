@@ -10,8 +10,8 @@ data class ChangeMatcher(
 ) {
 
     fun matches(event: ChangeEvent): Boolean {
-        val projectMatches = project.toLowerCase() in listOf("*", event.change.project.toLowerCase())
-        val branchMatches = branch.toLowerCase() in listOf("*", event.change.branch.toLowerCase())
+        val projectMatches = event.change.project.exactOrRegexMatch(project)
+        val branchMatches = event.change.branch.exactOrRegexMatch(branch)
         val isVerificationOnlyMatches = isVerificationOnly == null || isVerificationOnly == event.isVerificationOnly
         val eventChangeKind = event.changeKindOrNull
         val changeKindMatches = changeKind == null || eventChangeKind == null
@@ -28,6 +28,11 @@ data class ChangeMatcher(
 
     private val ChangeEvent.changeKindOrNull: String?
         get() = if (this is PatchSetCreatedEvent) patchSet.kind.toString() else null
+
+    private fun String.exactOrRegexMatch(pattern: String) = when {
+        pattern.startsWith("^") -> this.safeMatches(pattern)
+        else -> pattern.toLowerCase() in listOf("*", this.toLowerCase())
+    }
 
     private fun String.safeMatches(regex: String) = try {
         // Prefix with (?i) for a case-insensitive match
