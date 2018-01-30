@@ -41,22 +41,28 @@ class EventGroupingTransformerTest {
     fun can_match_events_based_on_project() {
         val eventMatchingTransformer = EventGroupingTransformer(listOf(
                 ChangeMatcher("Froboztic", "*", "*", "otherChannel"),
+                ChangeMatcher("^.*Dungeon", "*", "*", "regexChannel"),
                 ChangeMatcher("*", "*", "*", "channel")
         ))
         val groups = getEventGroupsWithTransformer(eventMatchingTransformer)
         assertNotNull(groups.firstOrNull { it.project == "Froboztic" })
+        assertNotNull(groups.firstOrNull { it.project == "The Dungeon Master" })
         assertEquals("otherChannel", groups.first { it.project == "Froboztic" }.channel)
+        assertEquals("regexChannel", groups.first { it.project == "The Dungeon Master" }.channel)
     }
 
     @Test
     fun can_match_events_based_on_branch() {
         val eventMatchingTransformer = EventGroupingTransformer(listOf(
                 ChangeMatcher("*", "feature-two", "*", "otherChannel"),
+                ChangeMatcher("*", "^my-.*$", "*", "regexChannel"),
                 ChangeMatcher("*", "*", "*", "channel")
         ))
         val groups = getEventGroupsWithTransformer(eventMatchingTransformer)
         assertNotNull(groups.firstOrNull { it.branch == "feature-two" })
+        assertNotNull(groups.firstOrNull { it.branch == "my-feature" })
         assertEquals("otherChannel", groups.first { it.branch == "feature-two" }.channel)
+        assertEquals("regexChannel", groups.first { it.branch == "my-feature" }.channel)
     }
 
     @Test
