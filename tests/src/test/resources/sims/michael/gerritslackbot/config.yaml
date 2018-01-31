@@ -68,17 +68,17 @@ Gerrit to Slack username mappings:
 # List of event matchers - required
 #
 # This is a list of matcher definitions for gerrit stream events. Each item in the list has the following properties:
-# project - exact match on project OR "*" to match all - required
-# branch - exact match on branch OR "*" to match all - required
-# subject - regular expression to match on any part of subject (match is case-insensitive) or "*" to match all - required
-# isVerificationOnly - boolean to match on comment added events that contain only verification approvals - optional
+# - project - regular expression to match on any part of project (match is case-insensitive) or "*" to match all - required
+# - branch - regular expression to match on any part of branch (match is case-insensitive) or "*" to match all - required
+# - subject - regular expression to match on any part of subject (match is case-insensitive) or "*" to match all - required
+# - isVerificationOnly - boolean to match on comment added events that contain only verification approvals - optional
 #     missing or null means match both verifications and non-verifications
 #     Note that a verification approval that is accompanied by a code review approval is considered a "non-verification"
 #     for the purposes of this test
-# changeKind - boolean to match on the "kind" of patch if it is a patchset-created event - optional
+# - changeKind - boolean to match on the "kind" of patch if it is a patchset-created event - optional
 #     missing or null means match any change kind
 #     commonly used to avoid notifying for trivial rebases or no code changes
-# channel - channel to notify - optional. If missing, the event will be dropped (used for filtering unwanted events)
+# - channel - channel to notify - optional. If missing, the event will be dropped (used for filtering unwanted events)
 #
 # Note that order matters... each event will be matched against each matcher in order and the first match wins.
 Event matchers:
