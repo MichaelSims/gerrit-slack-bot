@@ -22,5 +22,6 @@ class GerritUrlsTest {
     @Test
     fun formatGerritChangeUrl_works_as_expected() {
         assertEquals("http://server:8976/1/2", formatGerritChangeUrl("http://server:8976", 1, 2))
+        assertEquals("http://server:8976/1", formatGerritChangeUrl("http://server:8976", 1, null))
     }
 }
