@@ -30,7 +30,7 @@ data class ChangeMatcher(
         get() = if (this is PatchSetCreatedEvent) patchSet.kind.toString() else null
 
     private fun String?.safeMatchesWildcardOrRegex(pattern: String) =
-            pattern == "*" || this?.safeMatches(pattern) ?: true
+            pattern == "*" || this?.safeMatches(pattern) ?: false
 
     private fun String.safeMatches(regex: String) = try {
         // Prefix with (?i) for a case-insensitive match
