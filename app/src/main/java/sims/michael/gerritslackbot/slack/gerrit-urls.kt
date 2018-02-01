@@ -15,5 +15,6 @@ private fun formatGerritBaseUrlUsingHttpUrl(changeUrl: String): String? {
     return "${parsed.scheme()}://${parsed.host()}$port"
 }
 
-fun formatGerritChangeUrl(baseUrl: String, changeNumber: Int, patchSetNumber: Int?): String?
-        = "$baseUrl/$changeNumber/$patchSetNumber"
+fun formatGerritChangeUrl(baseUrl: String, changeNumber: Int, patchSetNumber: Int?): String? =
+        patchSetNumber?.let { "$baseUrl/$changeNumber/$patchSetNumber" } ?:"$baseUrl/$changeNumber"
+
