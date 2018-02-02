@@ -16,4 +16,4 @@ private fun formatGerritBaseUrlUsingHttpUrl(changeUrl: String): String? {
 }
 
 fun formatGerritChangeUrl(baseUrl: String, changeNumber: Int, patchSetNumber: Int?): String?
-        = "$baseUrl/$changeNumber/$patchSetNumber"
+        = listOfNotNull(baseUrl, changeNumber, patchSetNumber).joinToString("/")
